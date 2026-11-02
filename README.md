@@ -116,3 +116,10 @@ def perform_unsupervised_clustering(X_train_proc, df_train_orig):
     print(prioritized_queue[display_cols].to_string())
     
     return prioritized_queue
+
+if __name__ == "__main__":
+    df = load_and_prepare_data("student_data.csv")
+    X_train_orig, X_test_orig, X_tr_proc, X_te_proc, y_train, y_test, preprocessor = preprocess_data(df)
+    trained_rf = train_and_evaluate_supervised(X_tr_proc, X_te_proc, y_train, y_test)
+    kmeans_model = perform_unsupervised_clustering(X_tr_proc, X_train_orig)
+    intervention_queue = run_intervention_engine(trained_rf, X_test_orig, X_te_proc)
