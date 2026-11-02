@@ -74,3 +74,22 @@ def train_and_evaluate_supervised(X_train_proc, X_test_proc, y_train, y_test):
     print("\nClassification Report:\n", classification_report(y_test, rf_preds, zero_division=0))
     
     return rf
+
+def perform_unsupervised_clustering(X_train_proc, df_train_orig):
+    """Executes Unit IV Unsupervised Learning (K-Means Clustering)."""
+    print("\n" + "="*50)
+    print(" UNIT IV: UNSUPERVISED LEARNING (STUDENT SEGMENTATION)")
+    print("="*50)
+    
+    n_clusters = min(3, len(X_train_proc))
+    kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10)
+    clusters = kmeans.fit_predict(X_train_proc)
+    
+    df_clustered = df_train_orig.copy()
+    df_clustered['Risk_Cluster'] = clusters
+    
+    print("\nCluster Profiles (Mean Feature Values per Cluster):")
+    summary = df_clustered.groupby('Risk_Cluster')[['Study_Hours', 'Attendance', 'Assignment_Score', 'LMS_Logins_Per_Week']].mean()
+    print(summary)
+    
+    return kmeans
