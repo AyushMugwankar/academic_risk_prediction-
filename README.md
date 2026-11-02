@@ -10,3 +10,9 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, roc_auc_score
 from sklearn.cluster import KMeans
+
+def load_and_prepare_data(filepath="student_data.csv"):
+    """Loads dataset from CSV and inspects initial state."""
+    print("Loading dataset from:", filepath)
+    df = pd.read_csv(filepath)
+    return df
