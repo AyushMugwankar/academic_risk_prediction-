@@ -16,3 +16,24 @@ def load_and_prepare_data(filepath="student_data.csv"):
     print("Loading dataset from:", filepath)
     df = pd.read_csv(filepath)
     return df
+
+def preprocess_data(df):
+    """Executes Unit II Data Preparation tasks: Imputation, Encoding, and Scaling."""
+    df_clean = df.copy()
+    
+    # Median Imputation for missing values
+    df_clean['Attendance'] = df_clean['Attendance'].fillna(df_clean['Attendance'].median())
+    df_clean['Assignment_Score'] = df_clean['Assignment_Score'].fillna(df_clean['Assignment_Score'].median())
+    
+    X = df_clean.drop(columns=['High_Risk'])
+    y = df_clean['High_Risk']
+    
+    num_cols = ['Study_Hours', 'Attendance', 'Assignment_Score', 'LMS_Logins_Per_Week']
+    cat_cols = ['Department']
+    
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ('num', StandardScaler(), num_cols),
+            ('cat', OneHotEncoder(drop='first', sparse_output=False), cat_cols)
+        ]
+    )
