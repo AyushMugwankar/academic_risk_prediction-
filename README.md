@@ -93,3 +93,26 @@ def perform_unsupervised_clustering(X_train_proc, df_train_orig):
     print(summary)
     
     return kmeans
+    def run_intervention_engine(rf_model, X_test_orig, X_test_proc):
+    """Computes Priority Scores and generates the Intervention Queue."""
+    print("\n" + "="*50)
+    print(" INTERVENTION PRIORITIZATION ENGINE")
+    print("="*50)
+    
+    probabilities = rf_model.predict_proba(X_test_proc)[:, 1]
+    results = X_test_orig.copy()
+    results['Predicted_Risk_Probability'] = probabilities
+    
+    # Intervention Priority Calculation Formula
+    results['Priority_Score'] = (
+        results['Predicted_Risk_Probability'] *
+        (1 + (100 - results['Attendance']) / 100) *
+        (1 + (100 - results['Assignment_Score']) / 100)
+    )
+    
+    prioritized_queue = results.sort_values(by='Priority_Score', ascending=False)
+    print("\nPrioritized Students Queue for Advisor Intervention:")
+    display_cols = ['Study_Hours', 'Attendance', 'Assignment_Score', 'Predicted_Risk_Probability', 'Priority_Score']
+    print(prioritized_queue[display_cols].to_string())
+    
+    return prioritized_queue
